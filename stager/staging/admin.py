@@ -78,7 +78,7 @@ class LinkInline(admin.TabularInline):
     form = LinkSizeAdminForm
 
 class SectionAdmin(admin.ModelAdmin):
-    inlines = [SubsectionInline, CompInline, LinkInline ]
+    inlines = [CompInline, SubsectionInline , LinkInline ]
 
 
 # SUBSECTION PAGE
