@@ -22,8 +22,6 @@
 		<script type="text/javascript" src="{{ MEDIA_URL }}/static/js/hoverintent.js"></script>
 		<script type="text/javascript" src="{{ MEDIA_URL }}/static/js/slide.js"></script>
 {% endblock %}
-{% block mobile_content %} 
-
 {% if mobify %}<div id="projectdesc">{% endif %}{% block page_title %} 
 	{% with comp.project as project %}
 	{{ project.client.name }} : {{ project.name }}
@@ -49,9 +47,9 @@
 	{% if slide %} 
 		<div id="slide">
 			{% if mobify %}
-			{% thumbnail slide.image "320x99999" as im %}
-			<a href="{{next}}"><img src='{{im.url}}' /></a>
-			
+				{% thumbnail slide.image "320x99999" as im %}
+				<a href="{{next}}"><img src='{{im.url}}' /></a>
+				{% endthumbnail %}
 			{%else%}
 			<a href="{{next}}"><img src='{{MEDIA_URL}}/static/{{ slide.image }}' /></a>
 			{% endif %}
@@ -65,5 +63,4 @@
 	{% else %}
 		<div class="big">There are no slides for this comp yet.</div> 
 	{% endif %}
-{% endblock %}
 {% endblock %}

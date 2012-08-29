@@ -25,7 +25,7 @@ urlpatterns += patterns('stager.staging.views',
     (r'^login/$','login'),
     (r'^logout/$','logout'),
     
-    (r'^admin/(.*)', admin.site.root),
+    url(r'^admin/', include(admin.site.urls)),
 
     # Protect assets (make sure apache does not serve this directory)
     (r'^static/'+settings.FILE_UPLOAD+'(?P<filename>.*)$', 'servefile'),

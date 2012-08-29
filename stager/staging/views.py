@@ -7,28 +7,14 @@ from django.http import HttpResponseRedirect, Http404, HttpResponse
 from django.views.static import serve
 import re
 
-def check_mobile(request):
-    if mobify(request):
-		quest = request.get_full_path()
-		if quest.find('/why-ai/') == 0:
-			pagey = "base_why_ai_mobile.html"
-		else:
-			pagey = "base_mobile.html"
-		return pagey
-    else:
-	quest = request.get_full_path()
-	if quest.find('/why-ai/') == 0:
-		pagey = "base_why_ai.html"
-	else:
-		pagey = 'base.html'
-	return pagey
 
-def mobify(request):
-	if request.META.get('HTTP_HOST').find('m.') == 0:
-	#if request.META.get('QUERY_STRING') == 'mobile':
-	#if request.device.get('mobileDevice',None) or request.META.get('HTTP_HOST').find('m.') == 0:
-		#return request.device
-		return mobify
+def check_mobile(request):
+    quest = request.get_full_path()
+    if quest.find('/why-ai/') == 0:
+        pagey = "base_why_ai.html"
+    else:
+        pagey = 'base.html'
+    return pagey
 
 from models import ViewChoice
 from django.template import Context, Template
@@ -39,21 +25,30 @@ def project(request, client_path, project_path):
     """
     # for the context
     try:
-	    client = Client.objects.get(path=client_path)
-	    project = client.projects.get(path=project_path)	    
+        client = Client.objects.get(path=client_path)
+        project = client.projects.get(path=project_path)	    
     except Client.DoesNotExist, Project.DoesNotExist:
-	    raise Http404
+        raise Http404
     # display the view that matches the user's stored view preference, based on their last selection				
     u = request.user
-    choice= ViewChoice.objects.get(id=UserPreference.objects.get(user=u.id).default_display_id).default_d     
-    context = {'project':project, 'client':client, 'user':request.user, 'choice':choice, 'check':check_mobile(request),'mobify':mobify(request)}
+    try:
+        preference = UserPreference.objects.get(user=u)
+    except UserPreference.DoesNotExist:
+        preference = UserPreference()
+        preference.default_display = ViewChoice.objects.get(default_d='list')
+        preference.user = u
+        preference.save()
+    
+    
+    choice = ViewChoice.objects.get(id=preference.default_display_id).default_d     
+    context = {'project':project, 'client':client, 'user':request.user, 'choice':choice, 'check':check_mobile(request)}
     # update the grid/list view based on the users selection
     if request.is_ajax():
-	choice= request.GET.get('choice', False)
-	if choice and choice == 'grid' or choice == 'list':
-	    # store the user's preference in the database			
-	    u.userschoices.default_display = ViewChoice.objects.get(default_d=choice)
-	    u.userschoices.save()
+        choice= request.GET.get('choice', False)
+        if choice and choice == 'grid' or choice == 'list': 
+            # store the user's preference in the database			
+            u.userschoices.default_display = ViewChoice.objects.get(default_d=choice)
+            u.userschoices.save()
         return HttpResponse()
     
     else: 			
@@ -82,7 +77,7 @@ def login(request):
     else:
         redirect = request.GET['next']
     
-    return render_to_response('login.html', {'message':error_message, 'redirect':redirect, 'check':check_mobile(request),'mobify':mobify(request)})
+    return render_to_response('login.html', {'message':error_message, 'redirect':redirect, 'check':check_mobile(request)})
 
 def logout(request):
     """
@@ -100,7 +95,7 @@ def home(request):
     except:
         pass
         
-    return render_to_response('home.html', {'clients': clients, 'user':request.user, 'check':check_mobile(request),'mobify':mobify(request)})
+    return render_to_response('home.html', {'clients': clients, 'user':request.user, 'check':check_mobile(request)})
 
 @login_required
 def client_projects(request, client_path):
@@ -111,7 +106,7 @@ def client_projects(request, client_path):
             client = Client.objects.get(path=client_path)
         except Client.DoesNotExist:
             raise Http404
-    return render_to_response('client_projects.html', {'client': client, 'user':request.user, 'check':check_mobile(request),'mobify':mobify(request)})
+    return render_to_response('client_projects.html', {'client': client, 'user':request.user, 'check':check_mobile(request)})
 
 @login_required
 def comp_viewer(request, comp_id, idx='0'):
@@ -136,7 +131,7 @@ def comp_viewer(request, comp_id, idx='0'):
         image = None
 
     return render_to_response('compview.html', {'comp':comp, 'slide':image, 'next': next, 
-        'prev': prev, 'returnlink': comp.returnlink,'check':check_mobile(request),'mobify':mobify(request)})
+        'prev': prev, 'returnlink': comp.returnlink,'check':check_mobile(request)})
     
 def error(request):
     return render_to_response('404.html') 
