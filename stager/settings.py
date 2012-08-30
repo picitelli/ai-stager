@@ -73,13 +73,14 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
+    'grappelli',
     'django.contrib.admin',
     'stager.staging', 
     'django_evolution',
     'export',
 	'sorl.thumbnail',
 	'stager.jira',
-    'django_extensions'
+    'django_extensions',
 )
 
 # Stager Settings

@@ -54,7 +54,7 @@ class ProjectAdmin(admin.ModelAdmin):
     prepopulated_fields = {"path": ("name",)}
     list_filter = ('client', )
     ordering = ['-client', 'name']
-    inlines = [CategoryInline, SectionInline, ResourcesInline]
+    inlines = [SectionInline, CategoryInline, ResourcesInline]
 
 
 #SECTION PAGE    
