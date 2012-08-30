@@ -40,6 +40,7 @@
                     {% endfor %}
                 {% endfor %}
                 {% endspaceless %}
+
                 <div class="grp-tr">
                     {% for fieldset in inline_admin_form %}
                         {% for line in fieldset %}
@@ -50,6 +51,12 @@
                                             <p class="grp-readonly">{{ field.contents }}</p>
                                         {% else %}
                                             {{ field.field }}
+                                            {% if forloop.parentloop.first and inline_admin_formset.opts.modeltype %}
+                                            	<br/>
+                                            	<p><a href='/admin/staging/{{inline_admin_formset.opts.modeltype}}/{{inline_admin_form.original.id}}'></p>
+                                            		{{ inline_admin_form.original.name }}
+                                            	</a>
+                                            {% endif %}
                                             {{ field.field.errors.as_ul }}
                                         {% endif %}
                                         {% if field.field.help_text %}<p class="grp-help">{{ field.field.help_text }}</p>{% endif %}
