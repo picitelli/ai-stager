@@ -99,3 +99,4 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
+GRAPPELLI_ADMIN_TITLE = "Stager"
