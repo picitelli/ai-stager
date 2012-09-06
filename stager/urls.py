@@ -9,6 +9,7 @@ handler500 = 'stager.staging.views.error'
 
 urlpatterns = patterns('',
     url(r'^admin/export/', include('stager.export.urls')),
+    (r'^grappelli/', include('grappelli.urls')),
 )
 
 urlpatterns += patterns('stager.jira.views',
@@ -20,13 +21,12 @@ urlpatterns += patterns('stager.jira.views',
 
 urlpatterns += patterns('stager.staging.views',
     (r'^home/$','home'),
-
     (r'^accounts/login/$','login'),
     (r'^login/$','login'),
     (r'^logout/$','logout'),
     
     url(r'^admin/', include(admin.site.urls)),
-
+    url(r'', include('multiuploader.urls')),
     # Protect assets (make sure apache does not serve this directory)
     (r'^static/'+settings.FILE_UPLOAD+'(?P<filename>.*)$', 'servefile'),
 
