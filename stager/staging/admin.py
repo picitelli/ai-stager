@@ -96,9 +96,12 @@ class SubsectionAdmin(admin.ModelAdmin):
 class CompSlideInline(admin.TabularInline):
     template = 'admin/staging/edit_inline/_comp_slide_drag_upload.html'
     model = CompSlide
+    exclude=('background_colorfield', 'remove_background', )
     form = SlideSizeAdminForm
     sortable_field_name = "ordering"
     extra = 0
+    modeltype = 'compslide'
+    
     
 class CompAdmin(admin.ModelAdmin):
     inlines = [CompSlideInline,]
