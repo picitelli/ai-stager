@@ -31,6 +31,8 @@ class CategoryInline(admin.TabularInline):
     model = Category
     template = 'admin/staging/edit_inline/tabular.html'
     modeltype = 'category'
+    sortable_field_name = "ordering"
+    extra = 0
     
 class SectionInline(admin.TabularInline):
     model = Section
@@ -63,6 +65,8 @@ class CompInline(admin.TabularInline):
     template = 'admin/staging/edit_inline/tabular.html'    
     modeltype = 'comp'
     form = CompSizeAdminForm
+    sortable_field_name = "ordering"
+    extra = 0
     
 class SubsectionInline(admin.TabularInline):
     model = Subsection
@@ -76,6 +80,8 @@ class LinkInline(admin.TabularInline):
     modeltype = 'link'
     fields = ('name', 'remote_link', 'file_link', 'ordering', 'active')
     form = LinkSizeAdminForm
+    sortable_field_name = "ordering"
+    extra = 0
 
 class SectionAdmin(admin.ModelAdmin):
     inlines = [CompInline, SubsectionInline , LinkInline ]
@@ -87,12 +93,15 @@ class SubsectionAdmin(admin.ModelAdmin):
 
 
 # COMP PAGE
-class SlideInline(admin.TabularInline):
+class CompSlideInline(admin.TabularInline):
+    template = 'admin/staging/edit_inline/_comp_slide_drag_upload.html'
     model = CompSlide
     form = SlideSizeAdminForm
-
+    sortable_field_name = "ordering"
+    extra = 0
+    
 class CompAdmin(admin.ModelAdmin):
-    inlines = [SlideInline,]
+    inlines = [CompSlideInline,]
     form = CompSizeAdminForm
 
 

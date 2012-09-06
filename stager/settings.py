@@ -81,6 +81,7 @@ INSTALLED_APPS = (
 	'sorl.thumbnail',
 	'stager.jira',
     'django_extensions',
+    'multiuploader',
 )
 
 # Stager Settings

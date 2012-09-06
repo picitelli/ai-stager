@@ -1,0 +1,470 @@
+{% load url from future %}
+{% load i18n grp_tags %}
+    <div class="ajax_inline">
+	    {{ inline_admin_formset.formset.management_form }}
+	    {{ inline_admin_formset.formset.non_form_errors }}
+	    <!-- container -->
+	    
+	    	
+	    <div class="grp-module grp-table">
+	        <div class="grp-module grp-thead">
+	            <div class="grp-tr">
+	                {% for field in inline_admin_formset.fields %}
+	                    {% if not field.widget.is_hidden %}
+	                        <div class="grp-th {{ field.label|lower|slugify }}{% if field.required %} required{% endif %}">{{ field.label|capfirst }}</div>
+	                    {% endif %}
+	                {% endfor %}
+	                {% for field in slide_fields%}
+	                	<div class="grp-th {{ field|lower|slugify }}">{{ field|capfirst }}</div>
+	                {% endfor %}
+	                {% if inline_admin_formset.formset.can_delete %}<div class="grp-th">&nbsp;</div>{% endif %}
+	            </div>
+	        </div>
+	        {% with inline_admin_formset.opts.sortable_field_name|default:"ordering" as sortable_field_name %}
+	        {% for inline_admin_form in inline_admin_formset %}
+	            <!-- element -->
+	            <div class="grp-module grp-tbody{% if inline_admin_form.original or inline_admin_form.show_url %} has_original{% endif %}{% if forloop.last %} grp-empty-form{% endif %}"
+	                id="{{ inline_admin_formset.formset.prefix }}{% if not forloop.last %}{{ forloop.counter0 }}{% else %}-empty{% endif %}">
+	                {% if inline_admin_form.form.non_field_errors %}
+	                    {{ inline_admin_form.form.non_field_errors }}
+	                {% endif %}
+	                <h3 style="display: none;"><b>{{ inline_admin_formset.opts.verbose_name|title }} #{{ forloop.counter }}</b>&nbsp;&nbsp;{% if inline_admin_form.original %} {{ inline_admin_form.original }}{% endif %}</h3>
+	                {% spaceless %}
+	                {% for fieldset in inline_admin_form %}
+	                    {% for field in fieldset %}
+	                        {% if field.is_hidden %} {{ field }} {% endif %}
+	                    {% endfor %}
+	                {% endfor %}
+	                {% endspaceless %}
+	
+	                <div class="grp-tr">
+	                    {% for fieldset in inline_admin_form %}
+	                        {% for field in fieldset %}
+                                {% if not field.is_hidden %}
+                                    <div class="grp-td {{ field.field.name }} {% if field.field.errors %} grp-error{% endif %}">
+                                        {% if field.is_readonly %}
+                                            <p class="grp-readonly">{{ field.contents }}</p>
+                                        {% else %}
+                                            {{ field }}
+                                            {% if forloop.parentloop.first and inline_admin_formset.opts.modeltype %}
+                                            	<br/>
+                                            	<p><a href='/admin/staging/{{inline_admin_formset.opts.modeltype}}/{{inline_admin_form.original.id}}'></p>
+                                            		{{ inline_admin_form.original.name }}
+                                            	</a>
+                                            {% endif %}
+                                            {{ field.errors.as_ul }}
+                                        {% endif %}
+                                        {% if field.help_text %}<p class="grp-help">{{ field.help_text }}</p>{% endif %}
+                                    </div>
+                                {% endif %}
+	                        {% endfor %}
+	                    {% endfor %}
+	                    <div class="grp-td grp-tools-container">
+	                        {% spaceless %}
+	                        <ul class="grp-tools">
+	                            {% if inline_admin_form.show_url %}<li><a href="../../../r/{{ inline_admin_form.original_content_type_id }}/{{ inline_admin_form.original.id }}/" class="grp-icon grp-viewsite-link" title="View on Site" target="_blank"></a></li>{% endif %}
+	                            <li><a href="javascript://" class="grp-icon grp-drag-handler" title="Move Item"></a></li>
+	                            {% if inline_admin_formset.formset.can_delete %}
+	                                <li>{{ inline_admin_form.deletion_field.field }}<a href="javascript://" class="grp-icon {% if inline_admin_form.original %}grp-delete-handler{% else %}grp-remove-handler{% endif %}" title="Remove"></a></li>
+	                            {% else %}
+	                                {% if inline_admin_form.original %}
+	                                    <li>&nbsp;</li>
+	                                {% else %}
+	                                    <li><a href="javascript://" class="grp-icon grp-remove-handler" title="Remove"></a></li>
+	                                {% endif %}
+	                            {% endif %}
+	                        </ul>
+	                        {% endspaceless %}
+	                    </div>
+	                    {{ inline_admin_form.fk_field.field }}
+	                    {% if inline_admin_form.has_auto_field %}{{ inline_admin_form.pk_field.field }}{% endif %}
+	                </div>
+	            </div>
+	        {% endfor %}
+	        {% endwith %}
+	    </div>
+	    <div class="grp-module grp-transparent">
+	        <div class="grp-row">
+	            <a href="javascript://" class="grp-add-handler"><strong>{% blocktrans with inline_admin_formset.opts.verbose_name|title as verbose_name %}Add another {{ verbose_name }}{% endblocktrans %}</strong></a>
+	            <ul class="grp-tools">
+	                <li><a href="javascript://" class="grp-icon grp-add-handler" title="Add Item"></a></li>
+	            </ul>
+	        </div>
+	    </div>
+	</div>
+	
+<script type="text/javascript">
+
+/**
+ * GRAPPELLI INLINES
+ * jquery-plugin for inlines (stacked and tabular)
+ */
+
+
+(function($) {
+    $.fn.grp_inline = function(options) {
+        var defaults = {
+            prefix: "form",                         // The form prefix for your django formset
+            addText: "add another",                 // Text for the add link
+            deleteText: "remove",                   // Text for the delete link
+            addCssClass: "grp-add-handler",             // CSS class applied to the add link
+            removeCssClass: "grp-remove-handler",       // CSS class applied to the remove link
+            deleteCssClass: "grp-delete-handler",       // CSS class applied to the delete link
+            emptyCssClass: "grp-empty-form",            // CSS class applied to the empty row
+            formCssClass: "grp-dynamic-form",           // CSS class applied to each form in a formset
+            predeleteCssClass: "grp-predelete",
+            onBeforeInit: function(form) {},        // Function called before a form is initialized
+            onBeforeAdded: function(inline) {},     // Function called before a form is added
+            onBeforeRemoved: function(form) {},     // Function called before a form is removed
+            onBeforeDeleted: function(form) {},     // Function called before a form is deleted
+            onAfterInit: function(form) {},         // Function called after a form has been initialized
+            onAfterAdded: function(form) {},        // Function called after a form has been added
+            onAfterRemoved: function(inline) {},    // Function called after a form has been removed
+            onAfterDeleted: function(form) {}       // Function called after a form has been deleted
+        };
+        options = $.extend(defaults, options);
+        
+        return this.each(function() {
+            var inline = $(this); // the current inline node
+            var totalForms = inline.find("#id_" + options.prefix + "-TOTAL_FORMS");
+            // set autocomplete to off in order to prevent the browser from keeping the current value after reload
+            totalForms.attr("autocomplete", "off");
+            // init inline and add-buttons
+            initInlineForms(inline, options);
+            initAddButtons(inline, options);
+            // button handlers
+            addButtonHandler(inline.find("a." + options.addCssClass), options);
+            removeButtonHandler(inline.find("a." + options.removeCssClass), options);
+            deleteButtonHandler(inline.find("a." + options.deleteCssClass), options);
+        });
+    };
+    
+    updateFormIndex = function(elem, options, replace_regex, replace_with) {
+        elem.find(':input,span,table,iframe,label,a,ul,p,img').each(function() {
+            var node = $(this),
+                node_id = node.attr('id'),
+                node_name = node.attr('name'),
+                node_for = node.attr('for'),
+                node_href = node.attr("href");
+            if (node_id) { node.attr('id', node_id.replace(replace_regex, replace_with)); }
+            if (node_name) { node.attr('name', node_name.replace(replace_regex, replace_with)); }
+            if (node_for) { node.attr('for', node_for.replace(replace_regex, replace_with)); }
+            if (node_href) { node.attr('href', node_href.replace(replace_regex, replace_with)); }
+        });
+    };
+    
+    initInlineForms = function(elem, options) {
+        elem.find("div.grp-module").each(function() {
+            var form = $(this);
+            // callback
+            options.onBeforeInit(form);
+            // add options.formCssClass to all forms in the inline
+            // except table/theader/add-item
+            if (form.attr('id') !== "") {
+                form.not("." + options.emptyCssClass).not(".grp-table").not(".grp-thead").not(".add-item").addClass(options.formCssClass);
+            }
+            // add options.predeleteCssClass to forms with the delete checkbox checked
+            form.find("li.grp-delete-handler-container input").each(function() {
+                if ($(this).attr("checked") && form.hasClass("has_original")) {
+                    form.toggleClass(options.predeleteCssClass);
+                }
+            });
+            // callback
+            options.onAfterInit(form);
+        });
+    };
+    
+    initAddButtons = function(elem, options) {
+        var totalForms = elem.find("#id_" + options.prefix + "-TOTAL_FORMS");
+        var maxForms = elem.find("#id_" + options.prefix + "-MAX_NUM_FORMS");
+        var addButtons = elem.find("a." + options.addCssClass);
+        // hide add button in case we've hit the max, except we want to add infinitely
+        if ((maxForms.val() !== '') && (maxForms.val()-totalForms.val()) <= 0) {
+            hideAddBottons(elem, options);
+        }
+    };
+    
+    addButtonHandler = function(elem, options) {
+        elem.bind("click", function() {
+            var inline = elem.parents(".grp-group"),
+                totalForms = inline.find("#id_" + options.prefix + "-TOTAL_FORMS"),
+                maxForms = inline.find("#id_" + options.prefix + "-MAX_NUM_FORMS"),
+                addButtons = inline.find("a." + options.addCssClass),
+                empty_template = inline.find("#" + options.prefix + "-empty");
+            // callback
+            options.onBeforeAdded(inline);
+            // create new form
+            var index = parseInt(totalForms.val(), 10),
+                form = empty_template.clone(true);
+            form.removeClass(options.emptyCssClass)
+                .attr("id", empty_template.attr('id').replace("-empty", index))
+                .insertBefore(empty_template)
+                .addClass(options.formCssClass);
+            // update form index
+            var re = /__prefix__/g;
+            updateFormIndex(form, options, re, index);
+            // update total forms
+            totalForms.val(index + 1);
+            // hide add button in case we've hit the max, except we want to add infinitely
+            if ((maxForms.val() !== 0) && (maxForms.val() != "") && (maxForms.val() - totalForms.val()) <= 0) {
+                hideAddBottons(inline, options);
+            }
+            // callback
+            options.onAfterAdded(form);
+        });
+    };
+    
+    removeButtonHandler = function(elem, options) {
+        elem.bind("click", function() {
+            var inline = elem.parents(".grp-group"),
+                form = $(this).parents("." + options.formCssClass).first(),
+                totalForms = inline.find("#id_" + options.prefix + "-TOTAL_FORMS"),
+                maxForms = inline.find("#id_" + options.prefix + "-MAX_NUM_FORMS");
+            // callback
+            options.onBeforeRemoved(form);
+            // remove form
+            form.remove();
+            // update total forms
+            var index = parseInt(totalForms.val(), 10);
+            totalForms.val(index - 1);
+            // show add button in case we've dropped below max
+            if ((maxForms.val() !== 0) && (maxForms.val() - totalForms.val()) > 0) {
+                showAddButtons(inline, options);
+            }
+            // update form index (for all forms)
+            var re = /-\d+-/g,
+                i = 0;
+            inline.find("." + options.formCssClass).each(function() {
+                updateFormIndex($(this), options, re, "-" + i + "-");
+                i++;
+            });
+            // callback
+            options.onAfterRemoved(inline);
+        });
+    };
+    
+    deleteButtonHandler = function(elem, options) {
+        elem.bind("click", function() {
+            var deleteInput = $(this).prev(),
+                form = $(this).parents("." + options.formCssClass).first();
+            // callback
+            options.onBeforeDeleted(form);
+            // toggle options.predeleteCssClass and toggle checkbox
+            if (form.hasClass("has_original")) {
+                form.toggleClass(options.predeleteCssClass);
+                if (deleteInput.attr("checked")) {
+                    deleteInput.removeAttr("checked");
+                } else {
+                    deleteInput.attr("checked", 'checked');
+                }
+            }
+            // callback
+            options.onAfterDeleted(form);
+        });
+    };
+    
+    hideAddBottons = function(elem, options) {
+        var addButtons = elem.find("a." + options.addCssClass);
+        addButtons.hide().parents('.grp-add-item').hide();
+    };
+    
+    showAddButtons = function(elem, options) {
+        var addButtons = elem.find("a." + options.addCssClass);
+        addButtons.show().parents('.grp-add-item').show();
+    };
+    
+})(jQuery);
+
+
+function rebindSorter() {
+        console.log('rebinding');
+        var prefix = "slides";
+        console.log(prefix);
+        var related_lookup_fields_fk = {% get_related_lookup_fields_fk inline_admin_formset.opts %};
+        var related_lookup_fields_m2m = {% get_related_lookup_fields_m2m inline_admin_formset.opts %};
+        var related_lookup_fields_generic = {% get_related_lookup_fields_generic inline_admin_formset.opts %};
+        var autocomplete_fields_fk = {% get_autocomplete_lookup_fields_fk inline_admin_formset.opts %};
+        var autocomplete_fields_m2m = {% get_autocomplete_lookup_fields_m2m inline_admin_formset.opts %};
+        var autocomplete_fields_generic = {% get_autocomplete_lookup_fields_generic inline_admin_formset.opts %};
+        $.each(related_lookup_fields_fk, function() {
+            $("#slides-group > div.grp-table > div:not(.grp-empty-form)")
+            .find("input[name^='" + prefix + "'][name$='" + this + "']")
+            .grp_related_fk({lookup_url:"{% url 'grp_related_lookup' %}"});
+        });
+        $.each(related_lookup_fields_m2m, function() {
+            $("#slides-group > div.grp-table > div:not(.grp-empty-form)")
+            .find("input[name^='" + prefix + "'][name$='" + this + "']")
+            .grp_related_m2m({lookup_url:"{% url 'grp_m2m_lookup' %}"});
+        });
+        $.each(related_lookup_fields_generic, function() {
+            var content_type = this[0],
+                object_id = this[1];
+            $("#slides-group > div.grp-table > div:not(.grp-empty-form)")
+            .find("input[name^='" + prefix + "'][name$='" + this[1] + "']")
+            .each(function() {
+                var i = $(this).attr("id").match(/-\d+-/);
+                if (i) {
+                    var ct_id = "#id_" + prefix + i[0] + content_type,
+                        obj_id = "#id_" + prefix + i[0] + object_id;
+                    $(this).grp_related_generic({content_type:ct_id, object_id:obj_id, lookup_url:"{% url 'grp_related_lookup' %}"});
+                }
+            });
+        });
+        $.each(autocomplete_fields_fk, function() {
+            $("#slides-group > div.grp-table > div:not(.grp-empty-form)")
+            .find("input[name^='" + prefix + "'][name$='" + this + "']")
+            .each(function() {
+                $(this).grp_autocomplete_fk({
+                    lookup_url:"{% url 'grp_related_lookup' %}",
+                    autocomplete_lookup_url:"{% url 'grp_autocomplete_lookup' %}"
+                });
+            });
+        });
+        $.each(autocomplete_fields_m2m, function() {
+            $("#slides-group > div.grp-table > div:not(.grp-empty-form)")
+            .find("input[name^='" + prefix + "'][name$='" + this + "']")
+            .each(function() {
+                $(this).grp_autocomplete_m2m({
+                    lookup_url:"{% url 'grp_m2m_lookup' %}",
+                    autocomplete_lookup_url:"{% url 'grp_autocomplete_lookup' %}"
+                });
+            });
+        });
+        $.each(autocomplete_fields_generic, function() {
+            var content_type = this[0],
+                object_id = this[1];
+            $("#slides-group > div.grp-table > div:not(.grp-empty-form)")
+            .find("input[name^='" + prefix + "'][name$='" + this[1] + "']")
+            .each(function() {
+                var i = $(this).attr("id").match(/-\d+-/);
+                if (i) {
+                    var ct_id = "#id_" + prefix + i[0] + content_type,
+                        obj_id = "#id_" + prefix + i[0] + object_id;
+                    $(this).grp_autocomplete_generic({
+                        content_type:ct_id,
+                        object_id:obj_id,
+                        lookup_url:"{% url 'grp_related_lookup' %}",
+                        autocomplete_lookup_url:"{% url 'grp_autocomplete_lookup' %}"
+                    });
+                }
+            });
+        });
+        
+        $("#slides-group").grp_inline({
+            prefix: "slides",
+            onBeforeAdded: function(inline) {},
+            onAfterAdded: function(form) {
+                grappelli.reinitDateTimeFields(form);
+                grappelli.updateSelectFilter(form);
+                $.each(related_lookup_fields_fk, function() {
+                    form.find("input[name^='" + prefix + "'][name$='" + this + "']")
+                    .grp_related_fk({lookup_url:"{% url 'grp_related_lookup' %}"});
+                });
+                $.each(related_lookup_fields_m2m, function() {
+                    form.find("input[name^='" + prefix + "'][name$='" + this + "']")
+                    .grp_related_m2m({lookup_url:"{% url 'grp_m2m_lookup' %}"});
+                });
+                $.each(related_lookup_fields_generic, function() {
+                    var content_type = this[0],
+                        object_id = this[1];
+                    form.find("input[name^='" + prefix + "'][name$='" + this[1] + "']")
+                    .each(function() {
+                        var i = $(this).attr("id").match(/-\d+-/);
+                        if (i) {
+                            var ct_id = "#id_" + prefix + i[0] + content_type,
+                                obj_id = "#id_" + prefix + i[0] + object_id;
+                            $(this).grp_related_generic({content_type:ct_id, object_id:obj_id, lookup_url:"{% url 'grp_related_lookup' %}"});
+                        }
+                    });
+                });
+                $.each(autocomplete_fields_fk, function() {
+                    form.find("input[name^='" + prefix + "'][name$='" + this + "']")
+                    .each(function() {
+                        $(this).grp_autocomplete_fk({
+                            lookup_url:"{% url 'grp_related_lookup' %}",
+                            autocomplete_lookup_url:"{% url 'grp_autocomplete_lookup' %}"
+                        });
+                    });
+                });
+                $.each(autocomplete_fields_m2m, function() {
+                    form.find("input[name^='" + prefix + "'][name$='" + this + "']")
+                    .each(function() {
+                        $(this).grp_autocomplete_m2m({
+                            lookup_url:"{% url 'grp_m2m_lookup' %}",
+                            autocomplete_lookup_url:"{% url 'grp_autocomplete_lookup' %}"
+                        });
+                    });
+                });
+                $.each(autocomplete_fields_generic, function() {
+                    var content_type = this[0],
+                        object_id = this[1];
+                    form.find("input[name^='" + prefix + "'][name$='" + this[1] + "']")
+                    .each(function() {
+                        var i = $(this).attr("id").match(/-\d+-/);
+                        if (i) {
+                            var ct_id = "#id_" + prefix + i[0] + content_type,
+                                obj_id = "#id_" + prefix + i[0] + object_id;
+                            $(this).grp_autocomplete_generic({
+                                content_type:ct_id,
+                                object_id:obj_id,
+                                lookup_url:"{% url 'grp_related_lookup' %}",
+                                autocomplete_lookup_url:"{% url 'grp_autocomplete_lookup' %}"
+                            });
+                        }
+                    });
+                });
+            },
+        });
+        
+        console.log($("#slides-group > div.grp-table"));
+        $("#slides-group > div.grp-table").sortable({
+            handle: "a.grp-drag-handler",
+            items: "div.grp-dynamic-form",
+            axis: "y",
+            appendTo: 'body',
+            forceHelperSize: true,
+            placeholder: 'grp-module ui-sortable-placeholder',
+            forcePlaceholderSize: true,
+            containment: '#slides-group > div.grp-table',
+            tolerance: 'pointer',
+            start: function(evt, ui) {
+            	console.log('start');
+                var template = "<div class='grp-tr'>",
+                    len = ui.item.find("div.grp-tr").children("div.grp-td").length;
+                for (var i = 0; i < len; i++) {
+                    template += "<div class='grp-td' style='height:" + (ui.item.outerHeight() + 12 ) + "px'>&nbsp;</div>"
+                }
+                template += "</div>"
+                ui.placeholder.addClass("grp-tbody grp-module").append(template);
+            },
+            stop: function(evt, ui) {
+            	console.log('stop');
+                var lastScrollTop = $(window).scrollTop();
+                // Toggle div.table twice to remove webkits border-spacing bug
+                $("#slides-group > div.grp-table").toggle().toggle();
+                $(window).scrollTop(lastScrollTop);
+            },
+        });
+        $("#{{ opts.module_name }}_form").bind("submit", function(){
+            var sortable_field_name = "ordering",
+                sortable_excludes = {% get_sortable_excludes inline_admin_formset.opts %},
+                i = 0;
+            $("#slides-group").find("div.grp-tbody.grp-dynamic-form").each(function(){
+                var fields = $(this).find("div.grp-td :input[value][value!=''][type!=radio][type!=checkbox],input:checked,input[type=file]"),
+                    submit_values = false;
+                $(fields).each(function() {
+                    // position is being updated if
+                    // a) the field has a value
+                    // b) if the field is not exluded with sortable_excludes (e.g. with default values)
+                    if ($(this).val() && $(this).attr("name") && $.inArray($(this).attr("name").split("-").pop(), sortable_excludes) == -1) {
+                        submit_values = true;
+                    };
+                });
+                if (submit_values) {
+                    $(this).find("input[name$='"+sortable_field_name+"']").val(i);
+                    i++;
+                }
+            });
+        });
+};
+</script>

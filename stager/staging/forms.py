@@ -6,7 +6,7 @@ from stager.staging.models import *
 
 def validate_file_size(self, file_field):
     content = self.cleaned_data[file_field]
-    if content and content._size > settings.MAX_UPLOAD_SIZE:
+    if content and content.size > settings.MAX_UPLOAD_SIZE:
         raise forms.ValidationError(_('Please keep filesize under %s. Current filesize %s') % (filesizeformat(settings.MAX_UPLOAD_SIZE), filesizeformat(content._size)))
     return content
 
