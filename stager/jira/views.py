@@ -13,7 +13,7 @@ import SOAPpy, getpass, datetime, array, base64
 from SOAPpy import Types
 from stager.jira.decorators import *
 from django.core.files.uploadedfile import SimpleUploadedFile
-
+from django.template.context import RequestContext
 
 @login_required
 def list_projects(request, client_path, project_path):
@@ -25,12 +25,12 @@ def list_projects(request, client_path, project_path):
             jiras = ProjectLink.objects.get(ClientProject=project).JiraProject.exclude(filter_id='')
         except:
             jiras = None
-        return render_to_response('jira_list_projects.html', {'project':project, 
+        return render_to_response('jira_list_projects.html', RequestContext(request, {'project':project, 
                                                                    'client':client,
                                                                    'jiras':jiras, 
                                                                    'user':request.user,
                                                                    'client_path': client_path,
-                                                                   'project_path': project_path})
+                                                                   'project_path': project_path}))
     except Client.DoesNotExist, Project.DoesNotExist:
         raise Http404
 
@@ -62,13 +62,13 @@ def view_project(request, client_path, project_path, jira_key):
             jira.key = "%s-%s" % (test[0],pad)
             
         
-        return render_to_response('jira_project.html', {'project':project, 
+        return render_to_response('jira_project.html', RequestContext(request, {'project':project, 
                                                                    'client':client,
                                                                    'jiras':jiras, 
                                                                    'jira_project': jira_project,
                                                                    'user':request.user,
                                                                    'client_path': client_path,
-                                                                   'project_path': project_path})
+                                                                   'project_path': project_path}))
     except Client.DoesNotExist, Project.DoesNotExist:
         raise Http404
     
@@ -113,7 +113,7 @@ def insert_issue(request, client_path, project_path, jira_key):
         else:
             form = JiraTicketForm()
         
-        return render_to_response('jira_create_issue.html', {'project':project, 
+        return render_to_response('jira_create_issue.html', RequestContext(request, {'project':project, 
                                                                    'client':client,
                                                                    'client_path': client_path,
                                                                    'project_path': project_path,
@@ -121,6 +121,6 @@ def insert_issue(request, client_path, project_path, jira_key):
                                                                    'jira_project': jira_project,
                                                                    'user':request.user,
                                                                    'issue_url': issue_url,
-                                                                   'jira_key': jira_key})
+                                                                   'jira_key': jira_key}))
     except Client.DoesNotExist, Project.DoesNotExist:
         raise Http404

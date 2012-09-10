@@ -6,7 +6,7 @@ import django.contrib.auth as auth
 from django.http import HttpResponseRedirect, Http404, HttpResponse
 from django.views.static import serve
 import re
-
+from django.template.context import RequestContext
 
 def check_mobile(request):
     quest = request.get_full_path()
@@ -77,7 +77,7 @@ def login(request):
     else:
         redirect = request.GET['next']
     
-    return render_to_response('login.html', {'message':error_message, 'redirect':redirect, 'check':check_mobile(request)})
+    return render_to_response('login.html', RequestContext(request, {'message':error_message, 'redirect':redirect, 'check':check_mobile(request)}))
 
 def logout(request):
     """

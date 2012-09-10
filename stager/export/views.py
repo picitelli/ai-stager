@@ -6,6 +6,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic.simple import direct_to_template
 from django.contrib.admin.views.decorators import staff_member_required
+from django.template.context import RequestContext
 
 try:
     import S3
@@ -40,7 +41,7 @@ def export_database(request):
         response = HttpResponse(stdout, mimetype="application/octet-stream")
         response['Content-Disposition'] = 'attachment; filename=%s' % DATABASE_FILENAME
         return response
-    return direct_to_template(request, 'export/export.html', {'what': _(u'Export Database')})
+    return direct_to_template(request, 'export/export.html', RequestContext(request, {'what': _(u'Export Database')}))
 
 
 
@@ -59,7 +60,7 @@ def export_media(request):
         response = HttpResponse(stdout, mimetype="application/octet-stream")
         response['Content-Disposition'] = 'attachment; filename=%s' % date.today().__str__()+'_media.tar'
         return response
-    return direct_to_template(request, 'export/export.html', {'what': _(u'Export Media Root')})
+    return direct_to_template(request, 'export/export.html', RequestContext(request, {'what': _(u'Export Media Root')}))
 
 
 
@@ -88,7 +89,7 @@ def export_to_s3(request):
             request.user.message_set.create(message="%s" % _(u"Upload failed with %(status)s") % {'status': res.http_response.status})
         stdout.close()
         return HttpResponseRedirect('/admin/')
-    return direct_to_template(request, 'export/export.html', {'what': _(u'Export Database to S3'), 's3support': (S3 is not None), 's3': True})
+    return direct_to_template(request, 'export/export.html', RequestContext(request, {'what': _(u'Export Database to S3'), 's3support': (S3 is not None), 's3': True}))
 
 
 

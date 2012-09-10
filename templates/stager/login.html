@@ -24,6 +24,7 @@
 			<img src="{{ MEDIA_URL }}/static/images/logo.mobile.new.gif" />
 			{% endif %}
 				<form action="/login/" method="post" id="login_form">
+					{% csrf_token %}
 					<fieldset>
 						<div class="fieldline clear">
 							<label for="username" class="set">Username:</label>

@@ -115,9 +115,10 @@ function generateClickEvents(){
 				<div class="filter">
 						<h3>Jump to</h3>
 						<div class="dropdown">
-						<form  name="dropdownform" >
-							<select name="sections" id='select_section' >											
-							</select>
+							<form  name="dropdownform" >
+								{% csrf_token %}
+								<select name="sections" id='select_section' >											
+								</select>
 							</form>
 						</div>
 						<h3>View by</h3>

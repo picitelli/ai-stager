@@ -17,6 +17,7 @@
 	<p>{% trans "No Amazon S3 Support configured" %}</p>
   {% else %} 
 	<form name="export" action="" method="post" >
+		{% csrf_token %}
 		<input type="hidden" name="exportdb" value="true" />
 		<input type="submit" value="{% trans "Go" %}" />
 	</form>

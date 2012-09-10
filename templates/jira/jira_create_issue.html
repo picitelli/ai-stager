@@ -47,6 +47,7 @@
 					{% else %}
 						<div id="jira_form_wrapper">
 							<form id="jiraform" enctype="multipart/form-data" action="." method="POST">
+								{% csrf_token %}
 								<!--{{ form.as_p }}-->
 								<fieldset>
 									{% if form.summary.errors %}{{ form.summary.errors }}{% endif %}
