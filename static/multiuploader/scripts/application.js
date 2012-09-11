@@ -22,13 +22,13 @@ $(function () {
     $('#fileupload')
     	.fileupload({'url': '/multi/', 'formData': {'compId': 1035 } })
     	.bind('fileuploaddone', function (e, data) {
-    		//$tempAjax.html(data.result[0].html);
+    		$tempAjax.html(data.result[0].html);
     	})
     	.bind('fileuploadstart', function (e) {
     		$inline.fadeTo('slow', 0.25);
     	})
     	.bind('fileuploadstop', function (e) {
-    		/*$inline.fadeTo('slow', 0, function() {
+    		$inline.fadeTo('slow', 0, function() {
     			var $sib = $inline.find('.grp-module grp-tbody:last');
     			$sib.prev().remove();
     			$sib.prev().remove();
@@ -36,8 +36,8 @@ $(function () {
     			$inline.html($tempAjax.html());
     			rebindSorter();
     			$inline.fadeTo('slow', 1);
-    		});*/
-    		window.location = window.location;
+    		});
+    		//window.location = window.location;
     	})
     	;
 
