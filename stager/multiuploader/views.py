@@ -80,24 +80,33 @@ def multiuploader(request):
             log.info('File saving done')
             #settings imports
         with transaction.commit_on_success():
+            #get the current site
             admin_site = admin.site
             compAdmin = CompAdmin(Comp, admin_site)
             
+            #get all possible inlines for the parent Admin
             inline_instances = compAdmin.get_inline_instances(request)
             prefixes = {}
+            
             for FormSet, inline in zip(compAdmin.get_formsets(request, comp), inline_instances):
+                #get the inline of interest and generate it's formset
                 if isinstance(inline, CompSlideInline):
                     prefix = FormSet.get_default_prefix()
                     prefixes[prefix] = prefixes.get(prefix, 0) + 1
                     if prefixes[prefix] != 1 or not prefix:
                         prefix = "%s-%s" % (prefix, prefixes[prefix])
                     formset = FormSet(instance=comp, prefix=prefix, queryset=inline.queryset(request))
+            
+            #get possible fieldsets, readonly, and prepopulated information for the parent Admin
             fieldsets = list(inline.get_fieldsets(request, comp))
             readonly = list(inline.get_readonly_fields(request, comp))
             prepopulated = dict(inline.get_prepopulated_fields(request, comp))
+            
+            #generate the inline formset
             inline_admin_formset = helpers.InlineAdminFormSet(inline, formset,
                         fieldsets, prepopulated, readonly, model_admin=compAdmin)
 
+            #render the template
             t = loader.get_template('admin/staging/edit_inline/_comp_slide_drag_upload_ajax.html')
             c = Context({ 'inline_admin_formset': inline_admin_formset })
             rendered = t.render(c)
