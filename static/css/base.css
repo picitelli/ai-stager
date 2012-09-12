@@ -600,6 +600,7 @@ div#project_switcher_panel {float:right;}
 		padding: 15px 0 10px 0;
 	}
 
+/*
 #overlay {
 	background: #f00;
 	height: 100%;
@@ -608,6 +609,7 @@ div#project_switcher_panel {float:right;}
 	left: 0;
 	position: absolute;
 }
+*/
 
 #edit_slide {
 	width: 867px;
