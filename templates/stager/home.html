@@ -10,38 +10,26 @@
 
 {% block body_class %}home{% endblock %}
 
-{% block main_content %}
-<div id="main" class="clear">
-	<div id="masthead"></div>
-	<div id="maincontent">
-		<div class="content">
-		{% if clients %}
-			{% for client in clients %}
-			<div class="client">
-				<div class="head clear">
-					<h2>{% if not mobify %}<a href="javascript:void(0);" title="{{ client.name }}">{% endif %}{{ client.name }}{% if not mobify %}</a>{% endif %}{% if not mobify %}</h2>
-					<p class="pm">{% else %}<span> - {% endif %}
-						{{ client.contact.first_name }} {{ client.contact.last_name }}
-					{% if not mobify %}</p>{% else %}</span></h2>{% endif %}
-				</div>
-				
-				{% if client.projects %}
-				<div class="projects" {% if not mobify %}style="display: none;"{% endif %}>
-					<ul>
-						{% for project in client.projects.all %}
-						<li>
-							<a href="/client/{{ client.path }}/{{ project.path }}/#{{ project.default_category }}">
-								{{ project.name }}
-							</a>
-						</li>
-						{% endfor %}
-					</ul>
-				</div>
-				{% endif %}
+{% block content %}
+<div id="main">
+	{% if clients %}
+		{% for client in clients %}
+		<div class="client">
+			<div class="name clear">
+				<h2>{{ client.name }}</h2>
+				<em>{{ client.contact.first_name }} {{ client.contact.last_name }}</em>
 			</div>
-			{% endfor %}
-		{% endif %}
+			{% if client.projects %}
+			<div class="projects">
+				<ul>
+					{% for project in client.projects.all %}
+					<li><a href="/client/{{ client.path }}/{{ project.path }}/#{{ project.default_category }}">{{ project.name }}</a></li>
+					{% endfor %}
+				</ul>
+			</div>
+			{% endif %}
 		</div>
-	</div>
+		{% endfor %}
+	{% endif %}
 </div>
 {% endblock %}

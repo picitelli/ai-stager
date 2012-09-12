@@ -1,32 +1,15 @@
 {% extends check %}
 {% load thumbnail %}
-{% block section_css %}
-		
-		<link href="{{ MEDIA_URL }}/static/css/slides.css" rel="stylesheet" type="text/css" />
-		<style type="text/css">
-			/*
-			body {
-				background: {% if slide.background %} transparent  {% endif %} url('{{MEDIA_URL}}/static/{{slide.background}}') repeat-x left top;
-				background-color: {{ slide.background_color }};
-			}
-			#mainwrap img { margin: 0 auto;  {% if slide.alignment %}float: {{slide.alignment }};{% endif %}}
-			#slide {
-				
-				{% if slide.alignment %}background-position: top {{slide.alignment }};{% else %}background-position: top center;{% endif %} no-repeat;
-			}
-			*/
-		</style>
-{% endblock %}
 
 {% block section_js %}
 		<script type="text/javascript" src="{{ MEDIA_URL }}/static/js/hoverintent.js"></script>
 		<script type="text/javascript" src="{{ MEDIA_URL }}/static/js/slide.js"></script>
 {% endblock %}
-{% if mobify %}<div id="projectdesc">{% endif %}{% block page_title %} 
-	{% with comp.project as project %}
-	{{ project.client.name }} : {{ project.name }}
-	{% endwith %}
-{% endblock %}{% if mobify %}</div>{% endif %}
+
+{% block title %}
+	<a href="{{returnlink}}">{% with comp.project as project %}{{ project.client.name }}{% endwith %}</a>
+{% endblock %}
+
 
 {% block bar_content %} 
 	<div id="nav">
@@ -43,7 +26,7 @@
 	</div>
 {% endblock %}
 
-{% block main_content %}
+{% block content %}
 	{% if slide %} 
 		<div id="slide">
 			{% if mobify %}

@@ -1,23 +1,28 @@
-			<div class="paneslist">	
-			{% for rollup in project.category_rollups %}
-				{% if rollup.sections %}	
-					<div class="catblock">
-					{% for section in rollup.sections %}
-						<div class="contentblock section">						
-						<div id="{{ forloop.counter }}_list">
-						<p class="pm-subcat">{{ section.name }}:</p>
-						{% if section.description %}<p>{{ section.description }}</p>{% endif %}											
-						{% if section.links.all %}
-							<ul class="links">
-								{% for link in section.links.all %}
-								<li {% if link.file_link %} class='{{link.link|slice:"-3:"}}' {% endif %}>
-									<a href="{{ link.link }}" title="{{ link.name }}">
-										{{ link.name }}
-									</a>
-								</li>
-								{% endfor %}
-							</ul>
-						{% endif %}
+<div class="paneslist">	
+	{% for rollup in project.category_rollups %}
+		{% if rollup.sections %}	
+			<div class="catblock">
+				{% for section in rollup.sections %}
+					<div class="contentblock section">
+						<div id="list_{{ forloop.counter }}">
+							<div class="title clear">
+								<h2>{{ section.name }}</h2>
+								{% if section.date %}
+									<p class="date">{{ section.date|date:"m/d/Y" }}</p>
+								{% endif %}
+							</div>
+							{% if section.description %}<p class="desc">{{ section.description }}</p>{% endif %}	
+							{% if section.links.all %}
+								<ul class="links">
+									{% for link in section.links.all %}
+									<li {% if link.file_link %} class='{{link.link|slice:"-3:"}}' {% endif %}>
+										<a href="{{ link.link }}" title="{{ link.name }}">
+											{{ link.name }}
+										</a>
+									</li>
+									{% endfor %}
+								</ul>
+							{% endif %}
 						{% if section.comps.all %}
 							<ul class="links">
 								{% for comp in section.comps.all %}
@@ -27,8 +32,8 @@
 						{% endif %}
 						{% if section.active_subsections %}
 							{% for subsection in section.active_subsections.all %}
-								<p class="pm-subcat">{{ subsection.name }}: </p>
-								{% if subsection.description %}<p>{{ subsection.description }}</p>{% endif %}
+								<h3>{{ subsection.name }}</h3>
+								{% if subsection.description %}<p class="desc">{{ subsection.description }}</p>{% endif %}
 									{% if subsection.links.all %}
 										<ul class="links">
 										{% for link in subsection.links.all %}

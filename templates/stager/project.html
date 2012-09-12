@@ -3,12 +3,6 @@
 	{{ project.client.name }} : {{ project.name }}
 {% endblock %}
 
-{% block cufon %}
-	Cufon.replace('#project_nav .header', { fontFamily: 'Berthold Akzidenz Grotesk BE CN' });
-	Cufon.replace('#sidebar h3', { fontFamily: 'Berthold Akzidenz Grotesk BE CN' });
-	Cufon.replace('#maincontent .cat-buttons li', { fontFamily: 'Berthold Akzidenz Grotesk BE CN' });
-{% endblock %}
-
 {% block section_js %}
 <script type="text/javascript" src="/static/js/dropdown.js"></script>
 <script type="text/javascript" src="/static/js/jquery.tools.min.js"></script>
@@ -30,19 +24,21 @@ $(function() {
 	else {show('#list_section', '#grid_section');}
 	// global vars
 	VAR_CHOICE = '{{choice}}';
-	VAR_CURRENT_SECTION = '#1_{{choice}}';
+	VAR_CURRENT_SECTION = '#{{choice}}_1';
 	
 	// categories using jquery tools - tabs
-	$("ul.tabs").tabs("div.panes{{choice}} > div");
+	$("ul.togglers").tabs("div.panes{{choice}} > div");
 	
 	generateClickEvents();
-	$('#list_choice_input').click(function(){
+	$('#list_toggle').click(function(){
 		show_ajax('list', '{{client}}','{{project.path}}', '#list_section', '#grid_section');
-		return false;
+		$('#list_toggle').addClass("active");
+		$('#grid_toggle').removeClass("active");
 	});
-	$('#grid_choice_input').click(function(){
+	$('#grid_toggle').click(function(){
 		show_ajax('grid', '{{client}}','{{project.path}}', '#grid_section', '#list_section');
-		return false;
+		$('#grid_toggle').addClass("active");
+		$('#list_toggle').removeClass("active");
 	});
 	$('#select_section').change(function(){
 		selectSection($(this).val());
@@ -57,9 +53,9 @@ function fillDropdown(categoryName, choice){
 			removeAllOptions(document.dropdownform.sections);
 			{% for section in rollup.sections %}
 				{% if forloop.first %}
-					VAR_CURRENT_SECTION = '#1_'+choice;
+					VAR_CURRENT_SECTION = '#'+choice+'_1';
 				{% endif %}
-				addOption(document.dropdownform.sections, '{{section.name}}', '#{{forloop.counter}}_'+choice);
+				addOption(document.dropdownform.sections, '{{section.name}}', '#'+choice +'_{{forloop.counter}}');
 			{% endfor %}
 		}
 	{% endfor %}				
@@ -75,29 +71,26 @@ function generateClickEvents(){
 	{% endfor %}
 }
 
-</script>		
+</script>
 {% endblock %}
 
 {% block title %}{{ client.name }} {% endblock %}
 {% block description %}{{ project.name }} {% endblock %}
 
-{% block body_class %}{% endblock %}
+{% block body_class %}project{% endblock %}
 
 {% block header_extra %}
 	{% include "includes/header.html" %}
 {% endblock %}
 
-{% block main_content %}
-<div id="main">		
-	<div id="maincontent">
-		{% if project.categories.all %}
-		
-			{% if not mobify %}<div class="subnav"><ul class="tabs cat-buttons clear">{% else %}<p class="noBg">{% endif %}
-			{% if mobify %}<span><a href="/home/">&laquo; Home</a></span>{%endif%}
+{% block content %}
+<div id="main">
+	{% if project.categories.all %}
+		<ul class="togglers clear">
 			<!-- show all active categories. If user is staff show inactive categories also with css class 'inactive' -->
 			{% for category in project.categories.all %}	
 				{% if category.active or user.is_staff %}								
-					{% if not mobify %}<li>{% else %}<span>| {% endif %}<a id="{{category.name|slugify}}_tab" 
+					<li><a id="{{category.name|slugify}}_tab" 
 					class="tab 
 				{% endif %}
 				{% if not category.active and user.is_staff %}	inactive {% endif %}
@@ -105,30 +98,32 @@ function generateClickEvents(){
 					"
 					href="#{{ category.name|slugify }}"
 					
-					title="{{ category.name }}">{{ category.name }}								
-					</a>
-					{% if not mobify %}</li>{% else %}</span>{% endif %}
+					title="{{ category.name }}">{{ category.name }}
+					</a></li>
 				{% endif %}
 			{% endfor %}
-			{% if not mobify %}</ul></div>{% else %}</p>{% endif %}
-			<div  class="catblock">
-				<div class="filter">
-						<h3>Jump to</h3>
-						<div class="dropdown">
-							<form  name="dropdownform" >
-								{% csrf_token %}
-								<select name="sections" id='select_section' >											
-								</select>
-							</form>
-						</div>
-						<h3>View by</h3>
-						<div class="views">
-							<a href="#" id="list_choice_input">List Layout</a>
-							<a href="#" id="grid_choice_input">Grid Layout</a>
-						</div>	
-						<h3 class="approved">Approved Design</h3>								
+		</ul>
+
+		<div id="filter" class="clear">
+			<div class="jump clear">
+				<p>Jump to</p>
+				<form  name="dropdownform" >
+					{% csrf_token %}
+					<select name="sections" id='select_section' >
+						
+					</select>
+				</form>
+			</div>
+			<div class="view clear">
+				<p>View by</p>
+				<div class="views clear">
+					<span id="list_toggle" class="active">List</span>
+					<span id="grid_toggle">Grid</span>
 				</div>
-			</div>									
+			</div>
+			<span class="approved">Approved Design<span>
+		</div>
+								
 			<div id ="list_section">
 			
 				{% include 'list_view.html' %}
@@ -139,72 +134,10 @@ function generateClickEvents(){
 				</div> 
 				
 		{% else %}		
-		<p>No categories have been associated with this project yet.</p>
+		<p class="null">No categories have been associated with this project yet.</p>
 		{% endif %}
-	</div>	
-</div>		
 
-		
-
-		<!-- Stager 2.0 section 
-		<div class="admin" id="edit_slide">
-			<div class="header">
-				<a href="javascript:void(0);" class="close">Close</a>
-			</div>
-			<div class="wrap">
-				<div id="group_properties">
-					<h2>Group Properties</h2>
-				</div>
-				<div id="slide_properties">
-					<h2>Slides <span class="note">Drag to Reorder</span></h2>
-					<table>
-						<colgroup>
-							<col class="activity" />
-							<col class="title" />
-							<col class="image" />
-							<col class="background" />
-							<col class="alignment" />
-							<col class="approval" />
-							<col class="remove" />
-						</colgroup>
-						<thead>
-							<tr>
-								<th class="activity"><h3>Activity</h3></th>
-								<th><h3>Title</h3></th>
-								<th><h3>Image</h3></th>
-								<th><h3>Background</h3></th>
-								<th><h3>Alignment</h3></th>
-								<th><h3>Approval</h3></th>
-								<th class="remove"><h3>Remove</h3></th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td class="activity">
-									<label><input type="checkbox" /><span>Active</span></label>
-								</td>
-								<td class="title">
-									<input type="text" />
-								</td>
-								<td class="image"></td>
-								<td class="background"></td>
-								<td class="alignment"></td>
-								<td class="approval"></td>
-								<td class="remove">
-									<a href="javascript:void(0);">Delete Slide</a>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-				<div class="controls">
-					<a class="add" href="javascript:void(0);">Add New Slide</a>
-					<a class="cancel" href="javascript:void(0);">Cancel</a>
-					<a class="done" href="javascript:void(0);">Done</a>
-				</div>
-			</div>
-		</div>
-		-->
+</div>
 
 <div id="sidebar">
 

@@ -1,7 +1,7 @@
 
-<div class="thumbs">
+<div class="thumbs clear">
 <input type="hidden" {% cycle 'first' 'none' 'last'  as thumbposition %} />
-<h2>{{comp.name}}</h2>
+<h3>{{comp.name}}</h3>
 	{% if comp.slides %}
 	{% for slide in comp.slides.all %}
 	   
@@ -22,7 +22,7 @@
 			 >
 			 
 			<a href="{{ comp.link }}{{ forloop.counter0 }}" title="{{ slide.name }}">
-			<img src="/static/{{slide.image}}" width="206" height="154" alt="" /> </a>	
+			<img src="/static/{{slide.image}}" width="208" height="154" alt="" /> </a>	
 			<p class="approved">{{ slide.name }}</p>	
 			</div>
 			<!-- else if user is staff, show inactive too -->
@@ -39,7 +39,7 @@
 				{% endif %} {% endif %}
 				 >
 				<a href="{{ comp.link }}{{ forloop.counter0 }}" title="{{ slide.name }}">
-				<img src="/static/{{slide.image}}" width="206" height="154" alt="" /> </a>	
+				<img src="/static/{{slide.image}}" width="208" height="154" alt="" /> </a>	
 				<p class="approved">{{ slide.name }}</p>	
 				</div>
 			{% endif %}
@@ -59,7 +59,7 @@
 			{% endif %} {% endif %}
 			 > 
 			<a href="{{ comp.link }}{{ forloop.counter0 }}" title="{{ slide.name }}" >
-			<img src="/static/{{slide.image}}" width="206" height="154" alt="" /> </a>	
+			<img src="/static/{{slide.image}}" width="208" height="154" alt="" /> </a>	
 			<p class="approved">{{ slide.name }}</p>	
 			</div>		    
 			{% endif %}						
