@@ -45,6 +45,8 @@
 
 .fileupload-buttonbar .ui-button {
   vertical-align: middle;
+	width: auto;
+	margin: 0;
 }
 
 .fileupload-content {
@@ -98,3 +100,4 @@
 .ui-state-disabled input {
   cursor: default;
 }
+.ui-button-text-icon-primary .ui-button-text, .ui-button-text-icons .ui-button-text { padding-top: 0; padding-bottom: 0; }
