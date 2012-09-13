@@ -67,15 +67,15 @@ def multiuploader(request):
             wrapped_file = UploadedFile(file)
             filename = wrapped_file.name
             file_size = wrapped_file.file.size
-            
+            prepared_filename = os.path.splitext(filename)[0].replace('_', ' ').title()
             slide = CompSlide()
-            slide.title = filename
+            slide.title = prepared_filename
             slide.image = file
             slide.comp = comp
-            slide.name = "NAME"
+            slide.name = prepared_filename
             slide.save()
             comp.save()
-            
+
             log.info ('Got file: "%s"' % str(filename))
             log.info('Content type: "$s" % file.content_type')
             
