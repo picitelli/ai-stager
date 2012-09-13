@@ -26,7 +26,7 @@
 	{% block section_css %}{% endblock %}
 	<link href='http://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700,700italic' rel='stylesheet' type='text/css'>
 	<link href='http://fonts.googleapis.com/css?family=PT+Sans+Narrow:400,700' rel='stylesheet' type='text/css'>
-	<script src="static/js/lib/modernizr-2.5.3.min.js"></script>
+	<script src="{{ MEDIA_URL }}/static/js/modernizr.min.js"></script>
 
 	<title>Ai Staging : {% spaceless %}{% block page_title %}{% endblock %}{% endspaceless %}</title>
 </head>
@@ -61,14 +61,12 @@
 						<span>Welcome:</span>
 						<ul class="clear">
 							<li><a href="/admin">{{ user.username }}</a></li>
-							<li><a href="/logout">LOG OUT</a></li>
+							<li class="last"><a href="/logout">Log Out</a></li>
 						</ul>
 					</nav>
 					{% block header_extra %}{% endblock %}
 				</div>
 			</header>
-
-			{% block bar_content %}{% endblock %}
 
 			<div id="content">
 				<div class="wrapper clear">

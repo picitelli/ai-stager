@@ -11,7 +11,7 @@
 								<p class="date">{{ section.date|date:"m/d/Y" }}</p>
 							{% endif %}
 						</div>
-						{% if section.description %}<p>{{ section.description }}</p>{% endif %}					
+						{% if section.description %}<p class="desc">{{ section.description }}</p>{% endif %}					
 						<div class="grid clear">								
 						{% if section.comps.all %}
 							{% for comp in section.comps.all %}									
@@ -23,10 +23,9 @@
 							{% if section.active_subsections %}
 								{% for subsection in section.active_subsections.all %}
 									{% if subsection.comps.all %}
-									<!-- TODO: style this h2 -->
-									<h2>{{subsection.name}}</h2>
+									<h3>{{subsection.name}}</h3>
 								{% if subsection.description %}	
-								<p class="pm-notes">{{subsection.description}}</p>
+								<p class="desc">{{subsection.description}}</p>
 								{% endif %}										
 								<div class="clear">
 										{% for comp in subsection.comps.all %}
@@ -36,7 +35,7 @@
 								{% endif %}
 								{% endfor %}
 							{% endif %}
-						</div>								
+						</div>
 					</div>
 					</div>
 					{% endfor %}
@@ -46,7 +45,7 @@
 				
 				<div class="catblock">
 					<div class="contentblock">
-						<p class="nodata">Nothing has been posted to {{ rollup.category.name }} yet.</p>
+						<p class="null">Nothing has been posted to {{ rollup.category.name }} yet.</p>
 					</div>
 				</div>
 				{% endif %}

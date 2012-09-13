@@ -4,12 +4,9 @@
 	{{ project.client.name }} : {{ project.name }} : Jira Projects
 {% endblock %}
 
+{% block body_class %}jira{% endblock %}
+
 {% block section_css %}
-		<style type="text/css">
-			#maincontent .content {
-				padding: 0 1em;
-			}
-		</style>
 <link href="{{ MEDIA_URL }}/static/css/jira/jira_table.css" rel="stylesheet" type="text/css" />
 <link href="{{ MEDIA_URL }}/static/css/jquery.fancybox-1.2.5.css" rel="stylesheet" type="text/css" />
 {% endblock %}
@@ -22,11 +19,9 @@
 {% endblock %}
 
 {% load issue_status %}
-{% block main_content %}
+{% block content %}
 <div id="main" class="clear">
-	<div id="content-1">
-		{% include "includes/header.html" %}
-	</div>
+
 	<div id="maincontent">
 		{% if client %}
 			<h1>{{ client.name }}</h1>

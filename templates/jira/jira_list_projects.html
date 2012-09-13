@@ -4,10 +4,7 @@
 	{{ project.client.name }} : {{ project.name }} : Jira Projects
 {% endblock %}
 
-{% block cufon %}
-	Cufon.replace('#maincontent .content h2', { fontFamily: 'Berthold Akzidenz Grotesk BE CN' });
-	Cufon.replace('#sidebar h3', { fontFamily: 'Berthold Akzidenz Grotesk BE CN' });
-{% endblock %}
+{% block body_class %}jira{% endblock %}
 
 {% block section_css %}
 	<link href="{{ MEDIA_URL }}/static/css/jira/jira_table.css" rel="stylesheet" type="text/css" />
@@ -20,31 +17,23 @@
 
 {% block title %}{{ client.name }} {% endblock %}
 {% block description %}{{ project.name }} {% endblock %}
-
-{% block header_extra %}
-	{% include "includes/header.html" %}
-{% endblock %}
 	
-{% block main_content %}
+{% block content %}
 <div id="main" class="clear">
-	<div id="maincontent">
-		{% if client %}
-		<div class="content">
-			<div class="projects">
-				<div class="head">
-					<h2 class="projects clear">Jira Projects</h2>
-				</div>
-				{% if jiras %}
-				<ul class="projects">
-					{% for jira in jiras %}
-					<li><a href="/client/{{ client.path }}/{{ project.path }}/jira/{{ jira.key}}/">{{ jira.name }}</a></li>
-					{% endfor %}
-				</ul>
-				{% endif %}
-			</div>
+
+	{% if client %}
+	<div class="projects">
+		<h2>Jira Projects</h2>
+		{% if jiras %}
+		<ul>
+			{% for jira in jiras %}
+			<li><a href="/client/{{ client.path }}/{{ project.path }}/jira/{{ jira.key}}/">{{ jira.name }}</a></li>
+			{% endfor %}
+		</ul>
 		{% endif %}
-		</div>
 	</div>
+	{% endif %}
+
 </div>
 
 <div id="sidebar">
