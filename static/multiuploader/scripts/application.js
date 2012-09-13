@@ -20,7 +20,7 @@ $(function () {
     console.log($inline);
     // Initialize the jQuery File Upload widget:
     $('#fileupload')
-    	.fileupload({'url': '/multi/', 'formData': {'compId': 1035 } })
+    	.fileupload({'url': '/multi/', 'formData': {'compId': $('#id_slides-__prefix__-comp').val() } })
     	.bind('fileuploaddone', function (e, data) {
     		$tempAjax.html(data.result[0].html);
     	})
