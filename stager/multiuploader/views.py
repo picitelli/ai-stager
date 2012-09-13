@@ -11,6 +11,7 @@ from stager.staging.admin import CompSlideInline, CompAdmin
 from stager.staging.forms import *
 from django.db import transaction
 from django.contrib import admin
+from stager.staging.decorators import superuser_only
 
 #importing json parser to generate jQuery plugin friendly json response
 from django.utils import simplejson
@@ -43,6 +44,7 @@ def multiuploader_delete(request, pk):
         return HttpResponseBadRequest('Only POST accepted')
 
 @csrf_exempt
+@superuser_only
 def multiuploader(request):
     """
     Main Multiuploader module.
