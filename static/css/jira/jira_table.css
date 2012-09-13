@@ -239,7 +239,7 @@ tr.even { background-color: white; }
 	border: 1px solid #CCCCCC;
 }
 .top .dataTables_info { float: none; }
-.clear { clear: both; }
+/*.clear { clear: both; }*/
 .dataTables_empty { text-align: center; }
 tfoot input {
 	margin: 0.5em 0;

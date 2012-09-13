@@ -39,6 +39,7 @@ a:hover { text-decoration: underline; }
 #main .null {
 	font-family: 'PT Sans', Arial;
 	font-size: 1.5em;
+	text-align: center;
 }
 #sidebar {
 	float: right;
@@ -80,6 +81,7 @@ header .wrapper {
 	font-weight: 400;
 	margin-bottom: 5px;
 }
+#project h1 a { color: #252525; }
 #project em {
 	color: #858585;
 	font-family: 'PT Sans Narrow', Arial;
@@ -106,8 +108,9 @@ header .wrapper {
 #utility span {
 	color: #666;
 	display: block;
-	font-family: 'PT Sans', Arial;
 	float: left;
+	font-family: 'PT Sans', Arial;
+	font-style: italic;
 	font-size: 1.3em;
 	line-height: 30px;
 	margin-right: 8px;
@@ -122,7 +125,6 @@ header .wrapper {
 	float: left;
 	font-family: 'PT Sans', Arial;
 	font-size: 1.3em;
-	font-style: italic;
 	font-weight: 700;
 	line-height: 16px;
 	margin-right: 8px;
@@ -138,7 +140,6 @@ header .wrapper {
 }
 
 /* Login */
-
 #login { padding-top: 150px; }
 #login .logo {
 	margin: 0 auto 50px;
@@ -222,7 +223,7 @@ header .wrapper {
 	float: left;
 	font-family: 'PT Sans Narrow', Arial;
 	font-size: 2em;
-	font-weight: 400px;
+	font-weight: 400;
 }
 .home #main .client em {
 	color: #666;
@@ -238,6 +239,23 @@ header .wrapper {
 .home #main .client .projects ul li {
 	font-family: 'PT Sans', Arial;
 	font-size: 1.4em;
+}
+
+/* Client/Jira */
+.client #main h2, .jira #main h2 {
+	font-family: 'PT Sans Narrow', Arial;
+	font-size: 2em;
+	font-weight: 400;
+	line-height: 1;
+	margin-bottom: 10px;
+}
+.client #main .projects ul li, .jira #main .projects ul li {
+	background: url(../images/bullet.gif) no-repeat left center;
+	font-family: 'PT Sans', Arial;
+	font-size: 1.4em;
+	font-weight: 700;
+	margin-bottom: 5px;
+	padding-left: 10px;
 }
 
 /* Project */
@@ -471,7 +489,7 @@ header .wrapper {
 	font-size: 1.6em;
 	font-weight: 700;
 	line-height: 1;
-	margin: 10px 0;
+	margin: 20px 0 10px;
 	padding-bottom: 10px;
 }
 .contentblock p.desc {
@@ -480,7 +498,7 @@ header .wrapper {
 	font-family: 'PT Sans', Arial;
 	font-size: 1.4em;
 	font-style: italic;
-	margin-bottom: 10px;
+	margin-bottom: 15px;
 	padding-left: 20px;
 }
 .contentblock .thumbs .thumb {
@@ -505,7 +523,7 @@ header .wrapper {
 }
 
 #sidebar .contact-list {
-	margin-bottom: 25px;
+	margin-bottom: 30px;
 }
 #sidebar .contact-list h3 {
 	border-bottom: 1px solid #d3d3d3;
@@ -537,9 +555,30 @@ header .wrapper {
 }
 
 /* Comps */
-#comp_nav {
-	
+.comp #content .wrapper { width: auto; }
+.comp #slide img { margin: 0 auto; }
+#comp_toggle {
+	position: relative;
 }
+#comp_toggle a {
+	background: url('../images/arrow_togglers.png') no-repeat;
+	display: block;
+	height: 41px;
+	position: absolute;
+	text-indent: -9999px;
+	top: 27px;
+	width: 42px;
+}
+#comp_toggle #prev {
+	background-position: left top;
+	left: -62px;
+}
+#comp_toggle #prev:hover { background-position: left bottom; }
+#comp_toggle #next {
+	background-position: right top;
+	right: -62px;
+}
+#comp_toggle #next:hover { background-position: right bottom; }
 
 /* Footer */
 footer {
